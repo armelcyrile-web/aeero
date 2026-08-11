@@ -1,0 +1,76 @@
+// src/assets/styles/_variables.scss
+
+// =============================================
+// COULEURS
+// =============================================
+@use "sass:color";
+$color-primary: #1E3A8A;
+$color-secondary: #2563EB;
+$color-accent: #D4A017;
+$color-bg: #F8FAFC;
+$color-text: #1E293B;
+$color-success: #16A34A;
+$color-warning: #D97706;
+$color-danger: #DC2626;
+
+// Variantes utiles
+$color-primary-light: color.adjust($color-primary, $lightness: 10%);
+$color-primary-dark: color.adjust($color-primary, $lightness: -10%);
+$color-secondary-light: color.adjust($color-secondary, $lightness: 10%);
+$color-secondary-dark: color.adjust($color-secondary, $lightness: -10%);
+$color-accent-light: color.adjust($color-accent, $lightness: 10%);
+$color-accent-dark: color.adjust($color-accent, $lightness: -10%);
+$color-text-light: color.adjust($color-text, $lightness: 30%);
+$color-border: #E2E8F0;
+$color-white: #FFFFFF;
+
+// =============================================
+// ESPACEMENTS
+// =============================================
+$spacing-xs: 0.25rem;   // 4px
+$spacing-sm: 0.5rem;    // 8px
+$spacing-md: 1rem;      // 16px
+$spacing-lg: 1.5rem;    // 24px
+$spacing-xl: 2rem;      // 32px
+$spacing-2xl: 3rem;     // 48px
+
+// =============================================
+// RAYONS DE BORDURE
+// =============================================
+$radius-sm: 0.25rem;    // 4px
+$radius-md: 0.5rem;     // 8px
+$radius-lg: 0.75rem;    // 12px
+$radius-full: 9999px;
+
+// =============================================
+// BREAKPOINTS
+// =============================================
+$breakpoint-mobile: 768px;
+
+// =============================================
+// TYPOGRAPHIE
+// =============================================
+$font-family-base: 'Poppins', sans-serif;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semi-bold: 600;
+$font-weight-bold: 700;
+$font-size-sm: 0.875rem;    // 14px
+$font-size-base: 1rem;      // 16px
+$font-size-lg: 1.125rem;    // 18px
+$font-size-xl: 1.25rem;     // 20px
+$font-size-2xl: 1.5rem;     // 24px
+$font-size-3xl: 1.875rem;   // 30px
+
+// =============================================
+// OMBRES
+// =============================================
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+$shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+$shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+// =============================================
+// TRANSITIONS
+// =============================================
+$transition-fast: 150ms ease;
+$transition-base: 250ms ease;
