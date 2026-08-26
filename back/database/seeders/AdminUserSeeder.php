@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class AdminUserSeeder extends Seeder
 {
     public const ADMIN_EMAIL = 'admin@aeero.bj';
-    public const ADMIN_PASSWORD = 'password'; // à changer
+    public const ADMIN_PASSWORD = 'password'; // À changer après le premier déploiement
 
     public function run(): void
     {

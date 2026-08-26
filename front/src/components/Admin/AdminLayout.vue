@@ -6,15 +6,19 @@
       </div>
 
       <nav class="sidebar-nav">
-        <router-link to="/admin/publications" class="nav-link" @click="closeSidebar">
+        <router-link to="/admin" class="nav-link" exact-active-class="active" @click="closeSidebar">
+          <LayoutDashboard class="nav-icon" />
+          Tableau de bord
+        </router-link>
+        <router-link to="/admin/publications" class="nav-link" active-class="active" @click="closeSidebar">
           <Newspaper class="nav-icon" />
           Publications
         </router-link>
-        <router-link to="/admin/albums" class="nav-link" @click="closeSidebar">
+        <router-link to="/admin/albums" class="nav-link" active-class="active" @click="closeSidebar">
           <Images class="nav-icon" />
           Albums
         </router-link>
-        <router-link to="/admin/bureau" class="nav-link" @click="closeSidebar">
+        <router-link to="/admin/bureau" class="nav-link" active-class="active" @click="closeSidebar">
           <Users class="nav-icon" />
           Bureau
         </router-link>
@@ -33,46 +37,21 @@
         <button class="menu-toggle" @click="sidebarOpen = !sidebarOpen" aria-label="Menu">
           <Menu class="menu-icon" />
         </button>
-        <h1>Tableau de bord</h1>
       </header>
-
-      <div class="stats-grid">
-        <div class="stat-card">
-          <Newspaper class="stat-icon" />
-          <h3>{{ stats.publications }}</h3>
-          <p>Publications</p>
-        </div>
-        <div class="stat-card">
-          <Images class="stat-icon" />
-          <h3>{{ stats.albums }}</h3>
-          <p>Albums</p>
-        </div>
-        <div class="stat-card">
-          <Users class="stat-icon" />
-          <h3>{{ stats.membres }}</h3>
-          <p>Membres du bureau</p>
-        </div>
-      </div>
+      <slot />
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import axios from '@/utils/axios'
-import { Newspaper, Images, Users, LogOut, Menu } from 'lucide-vue-next'
+import { LayoutDashboard, Newspaper, Images, Users, LogOut, Menu } from 'lucide-vue-next'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const sidebarOpen = ref(false)
-
-const stats = reactive({
-  publications: 0,
-  albums: 0,
-  membres: 0,
-})
 
 const closeSidebar = () => {
   if (window.innerWidth <= 768) {
@@ -84,21 +63,6 @@ const handleLogout = async () => {
   await authStore.logout()
   router.push('/admin/login')
 }
-
-onMounted(async () => {
-  try {
-    const [pubs, albums, membres] = await Promise.all([
-      axios.get('/publications'),
-      axios.get('/albums'),
-      axios.get('/membres-bureau'),
-    ])
-    stats.publications = pubs.data.length
-    stats.albums = albums.data.length
-    stats.membres = membres.data.length
-  } catch (error) {
-    console.error('Erreur lors du chargement des statistiques', error)
-  }
-})
 </script>
 
 <style scoped>
@@ -149,7 +113,7 @@ onMounted(async () => {
 }
 
 .nav-link:hover,
-.nav-link.router-link-exact-active {
+.nav-link.active {
   background-color: rgba(139, 111, 122, 0.15);
   color: var(--primary);
 }
@@ -186,7 +150,7 @@ onMounted(async () => {
 
 .main-content {
   flex: 1;
-  padding: 2rem 2rem 2rem 0;
+  padding: 2rem;
 }
 
 .content-header {
@@ -208,44 +172,6 @@ onMounted(async () => {
 .menu-icon {
   width: 24px;
   height: 24px;
-}
-
-.content-header h1 {
-  font-size: 2rem;
-  color: var(--text);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  background-color: var(--surface);
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  text-align: center;
-}
-
-.stat-icon {
-  width: 32px;
-  height: 32px;
-  color: var(--primary);
-  margin-bottom: 0.75rem;
-}
-
-.stat-card h3 {
-  font-size: 2.5rem;
-  color: var(--text);
-  margin-bottom: 0.25rem;
-}
-
-.stat-card p {
-  color: var(--text);
-  font-size: 1rem;
-  opacity: 0.8;
 }
 
 @media (max-width: 768px) {

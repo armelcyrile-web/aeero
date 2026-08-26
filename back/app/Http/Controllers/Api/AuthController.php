@@ -1,48 +1,48 @@
 <?php
-// app/Http/Controllers/Api/AuthController.php
-
-declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\LoginRequest;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request): JsonResponse
+    public function login(Request $request)
     {
-        $user = User::where('email', $request->input('email'))->first();
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        if (!$user || !Hash::check($request->input('password'), $user->password)) {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json([
-                'message' => 'Identifiants incorrects',
-            ], 422);
+                'message' => 'Identifiants invalides.',
+            ], 401);
         }
 
-        $token = $user->createToken('api-token')->plainTextToken;
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'user' => $user->load('roles'),
             'token' => $token,
+            'user' => $user,
         ]);
     }
 
-    public function logout(Request $request): JsonResponse
+    public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([
-            'message' => 'Déconnexion réussie',
+            'message' => 'Déconnexion réussie.',
         ]);
     }
 
-    public function me(Request $request): JsonResponse
+    public function me(Request $request)
     {
-        return response()->json($request->user()->load('roles'));
+        return response()->json($request->user());
     }
 }

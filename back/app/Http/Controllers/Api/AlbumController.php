@@ -1,140 +1,99 @@
 <?php
-// app/Http/Controllers/Api/AlbumController.php
-
-declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\StatutPublication;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddPhotosRequest;
-use App\Http\Requests\RejectAlbumRequest;
-use App\Http\Requests\StoreAlbumRequest;
-use App\Http\Requests\UpdateAlbumRequest;
 use App\Models\Album;
-use Illuminate\Http\JsonResponse;
+use App\Models\Photo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Photo;
+
 class AlbumController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index()
     {
-        $query = Album::query()->with(['auteur', 'evenement', 'programme']);
+        return Album::withCount('photos')->get();
+    }
 
-        if ($request->has('statut')) {
-            $query->where('statut', $request->input('statut'));
+    public function show($id)
+    {
+        return Album::with('photos')->findOrFail($id);
+    }
+
+    public function store(Request $request)
+    {
+        $data = $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+            'cover_image' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('albums/covers', 'public');
         }
 
-        $albums = $query->orderBy('created_at', 'desc')->paginate(15);
-
-        return response()->json($albums);
+        return Album::create($data);
     }
 
-    public function store(StoreAlbumRequest $request): JsonResponse
+    public function update(Request $request, $id)
     {
-        $this->authorize('create', Album::class);
+        $album = Album::findOrFail($id);
 
-        $data = $request->validated();
-        $data['auteur_id'] = auth()->id();
-        $data['statut'] = StatutPublication::Brouillon;
+        $data = $request->validate([
+            'titre' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'date' => 'required|date',
+            'cover_image' => 'nullable|image|max:2048',
+        ]);
 
-        $album = Album::create($data);
+        if ($request->hasFile('cover_image')) {
+            if ($album->cover_image) {
+                Storage::disk('public')->delete($album->cover_image);
+            }
+            $data['cover_image'] = $request->file('cover_image')->store('albums/covers', 'public');
+        }
 
-        return response()->json($album, 201);
+        $album->update($data);
+
+        return $album;
     }
 
-    public function show(Album $album): JsonResponse
+    public function destroy($id)
     {
-        $album->load(['auteur', 'evenement', 'programme', 'photos']);
+        $album = Album::with('photos')->findOrFail($id);
 
-        return response()->json($album);
-    }
-
-    public function update(UpdateAlbumRequest $request, Album $album): JsonResponse
-    {
-        $this->authorize('update', $album);
-
-        $album->update($request->validated());
-
-        return response()->json($album);
-    }
-
-    public function destroy(Album $album): JsonResponse
-    {
-        $this->authorize('delete', $album);
+        if ($album->cover_image) {
+            Storage::disk('public')->delete($album->cover_image);
+        }
 
         foreach ($album->photos as $photo) {
-            Storage::disk('public')->delete($photo->chemin);
+            Storage::disk('public')->delete($photo->chemin_image);
         }
 
         $album->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['message' => 'Album supprimé.']);
     }
 
-    public function submit(Album $album): JsonResponse
+    public function addPhotos(Request $request, $albumId)
     {
-        $this->authorize('submit', $album);
+        $album = Album::findOrFail($albumId);
 
-        $album->update(['statut' => StatutPublication::EnAttente]);
-
-        // TODO: Envoyer une notification/email au président
-
-        return response()->json($album);
-    }
-
-    public function validatePublication(Album $album): JsonResponse
-    {
-        $this->authorize('validate', $album);
-
-        $album->update([
-            'statut' => StatutPublication::Publie,
-            'published_at' => now(),
-            'valide_par_id' => auth()->id(),
+        $request->validate([
+            'photos' => 'required|array',
+            'photos.*' => 'image|max:2048',
         ]);
-
-        return response()->json($album);
-    }
-
-    public function reject(RejectAlbumRequest $request, Album $album): JsonResponse
-    {
-        $this->authorize('reject', $album);
-
-        $album->update([
-            'statut' => StatutPublication::Rejete,
-            'motif_rejet' => $request->input('motif_rejet'),
-        ]);
-
-        return response()->json($album);
-    }
-
-    public function addPhotos(AddPhotosRequest $request, Album $album): JsonResponse
-    {
-        $this->authorize('update', $album);
 
         $photos = [];
 
-        foreach ($request->input('photos') as $index => $photoData) {
-            $file = $request->file("photos.{$index}.image");
-            $path = $file->store("albums/{$album->id}", 'public');
-
+        foreach ($request->file('photos') as $file) {
+            $path = $file->store('albums', 'public');
             $photos[] = $album->photos()->create([
-                'chemin' => $path,
-                'legende' => $photoData['legende'] ?? null,
+                'chemin_image' => $path,
             ]);
         }
 
         return response()->json($photos, 201);
-    }
-
-    public function deletePhoto(Album $album, Photo $photo): JsonResponse
-    {
-        $this->authorize('update', $album);
-
-        Storage::disk('public')->delete($photo->chemin);
-        $photo->delete();
-
-        return response()->json(null, 204);
     }
 }

@@ -1,0 +1,17 @@
+:root {
+  --primary: #8B6F7A;
+  --secondary: #9ACD32;
+  --accent: #E8734A;
+  --bg: #FAF9F7;
+  --text: #2A2426;
+  --surface: #ffffff;
+}
+
+body.dark {
+  --primary: #B597A3;
+  --secondary: #A8D451;
+  --accent: #F0885E;
+  --bg: #1A1618;
+  --surface: #252023;
+  --text: #EDE8E9;
+}

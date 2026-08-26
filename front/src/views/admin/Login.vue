@@ -1,320 +1,159 @@
-<!-- src/views/admin/Login.vue -->
+<template>
+  <div class="login-page">
+    <div class="login-card">
+      <h1 class="logo">AEERO</h1>
+      <p class="subtitle">Espace administrateur</p>
+
+      <form @submit.prevent="handleLogin" class="login-form">
+        <div class="input-group">
+          <Mail class="input-icon" />
+          <input
+            type="email"
+            v-model="email"
+            placeholder="Adresse email"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="input-group">
+          <Lock class="input-icon" />
+          <input
+            type="password"
+            v-model="password"
+            placeholder="Mot de passe"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" class="btn-login" :disabled="loading">
+          {{ loading ? 'Connexion...' : 'Se connecter' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import Swal from 'sweetalert2'
+import { Mail, Lock } from 'lucide-vue-next'
 
-const router = useRouter();
-const authStore = useAuthStore();
+const router = useRouter()
+const authStore = useAuthStore()
 
-const email = ref('');
-const password = ref('');
-const isLoading = ref(false);
-const error = ref('');
-const showPassword = ref(false);
-const rememberMe = ref(true);
+const email = ref('')
+const password = ref('')
+const loading = ref(false)
 
-async function handleLogin() {
-    if (!email.value || !password.value) {
-        error.value = 'Veuillez remplir tous les champs.';
-        return;
-    }
-
-    isLoading.value = true;
-    error.value = '';
-
-    try {
-        await authStore.login(email.value, password.value, rememberMe.value);
-        router.push({ name: 'AdminDashboard' });
-    } catch (err) {
-        if (err.response && err.response.status === 422) {
-            error.value = err.response.data.message || 'Identifiants incorrects.';
-        } else {
-            error.value = 'Une erreur est survenue. Veuillez réessayer.';
-        }
-    } finally {
-        isLoading.value = false;
-    }
-}
-
-function togglePasswordVisibility() {
-    showPassword.value = !showPassword.value;
+const handleLogin = async () => {
+  loading.value = true
+  try {
+    await authStore.login(email.value, password.value)
+    router.push('/admin')
+  } catch (error) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Erreur de connexion',
+      text: error.response?.data?.message || 'Identifiants incorrects',
+    })
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
-<template>
-    <div class="login-page">
-        <div class="login-card">
-            <div class="login-header">
-                <h1>AEERO</h1>
-                <p>Espace d'administration</p>
-            </div>
-
-            <form class="login-form" @submit.prevent="handleLogin">
-                <div v-if="error" class="alert alert-error">
-                    {{ error }}
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                        id="email"
-                        v-model="email"
-                        type="email"
-                        placeholder="votre@email.com"
-                        autocomplete="email"
-                        required
-                    />
-                </div>
-
-                <div class="form-group">
-                    <label for="password">Mot de passe</label>
-                    <div class="password-wrapper">
-                        <input
-                            id="password"
-                            v-model="password"
-                            :type="showPassword ? 'text' : 'password'"
-                            placeholder="Votre mot de passe"
-                            autocomplete="current-password"
-                            required
-                        />
-                        <button
-                            type="button"
-                            class="password-toggle"
-                            @click="togglePasswordVisibility"
-                            :aria-label="showPassword ? 'Cacher le mot de passe' : 'Afficher le mot de passe'"
-                        >
-                            <EyeOff v-if="showPassword" :size="18" />
-                            <Eye v-else :size="18" />
-                        </button>
-                    </div>
-                </div>
-
-                <div class="form-group form-group--checkbox">
-                    <label class="checkbox-label">
-                        <input
-                            type="checkbox"
-                            v-model="rememberMe"
-                            class="checkbox-input"
-                        />
-                        <span class="checkbox-custom"></span>
-                        <span>Se souvenir de moi</span>
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-login" :disabled="isLoading">
-                    <span v-if="isLoading" class="spinner"></span>
-                    {{ isLoading ? 'Connexion...' : 'Se connecter' }}
-                </button>
-            </form>
-        </div>
-    </div>
-</template>
-
-<style lang="scss" scoped>
-@use '@/assets/styles/variables' as *;
-
+<style scoped>
 .login-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: $color-bg;
-    padding: $spacing-md;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg);
+  padding: 1.5rem;
 }
 
 .login-card {
-    background-color: $color-white;
-    border-radius: $radius-lg;
-    box-shadow: $shadow-lg;
-    padding: $spacing-2xl;
-    width: 100%;
-    max-width: 420px;
+  background-color: var(--surface);
+  padding: 3rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
 }
 
-.login-header {
-    text-align: center;
-    margin-bottom: $spacing-xl;
+.logo {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
 
-    h1 {
-        font-family: $font-family-base;
-        font-size: $font-size-3xl;
-        font-weight: $font-weight-bold;
-        color: $color-primary;
-        letter-spacing: 3px;
-        margin-bottom: $spacing-xs;
-    }
-
-    p {
-        font-size: $font-size-sm;
-        color: $color-text-light;
-    }
+.subtitle {
+  color: var(--text);
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
 }
 
 .login-form {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.alert {
-    padding: $spacing-sm $spacing-md;
-    border-radius: $radius-md;
-    font-size: $font-size-sm;
-
-    &-error {
-        background-color: lighten($color-danger, 40%);
-        color: $color-danger;
-        border: 1px solid lighten($color-danger, 30%);
-    }
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.form-group {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-xs;
-
-    label {
-        font-size: $font-size-sm;
-        font-weight: $font-weight-medium;
-        color: $color-text;
-    }
-
-    input[type="email"],
-    input[type="password"],
-    input[type="text"] {
-        padding: $spacing-sm $spacing-md;
-        border: 1px solid $color-border;
-        border-radius: $radius-md;
-        font-family: $font-family-base;
-        font-size: $font-size-base;
-        color: $color-text;
-        outline: none;
-        width: 100%;
-        transition: border-color $transition-base;
-
-        &:focus {
-            border-color: $color-secondary;
-            box-shadow: 0 0 0 3px rgba($color-secondary, 0.1);
-        }
-    }
-
-    &--checkbox {
-        flex-direction: row;
-        align-items: center;
-    }
+.input-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--primary);
+  width: 20px;
+  height: 20px;
 }
 
-.password-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    input {
-        padding-right: 44px;
-    }
+.input-group input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 3rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: border-color 0.3s;
 }
 
-.password-toggle {
-    position: absolute;
-    right: 8px;
-    background: none;
-    border: none;
-    color: $color-text-light;
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color $transition-base;
-
-    &:hover {
-        color: $color-text;
-    }
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: $spacing-sm;
-    cursor: pointer;
-    font-size: $font-size-sm;
-    color: $color-text;
-    user-select: none;
-}
-
-.checkbox-input {
-    display: none;
-}
-
-.checkbox-custom {
-    width: 18px;
-    height: 18px;
-    border: 2px solid $color-border;
-    border-radius: $radius-sm;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color $transition-base, background-color $transition-base;
-    flex-shrink: 0;
-
-    .checkbox-input:checked + & {
-        background-color: $color-secondary;
-        border-color: $color-secondary;
-    }
-
-    .checkbox-input:checked + &::after {
-        content: '';
-        width: 5px;
-        height: 10px;
-        border: solid $color-white;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-        margin-top: -2px;
-    }
+.input-group input:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
 .btn-login {
-    background-color: $color-secondary;
-    color: $color-white;
-    border: none;
-    padding: $spacing-sm;
-    border-radius: $radius-md;
-    font-size: $font-size-base;
-    font-weight: $font-weight-semi-bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: $spacing-sm;
-    transition: background-color $transition-base;
-    margin-top: $spacing-sm;
-
-    &:hover:not(:disabled) {
-        background-color: $color-secondary-dark;
-    }
-
-    &:disabled {
-        opacity: 0.7;
-        cursor: not-allowed;
-    }
+  padding: 0.85rem;
+  background-color: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-.spinner {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: $color-white;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
+.btn-login:hover:not(:disabled) {
+  background-color: #d95f3c;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

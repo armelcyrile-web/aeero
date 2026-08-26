@@ -4,20 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MembreBureau extends Model
+class AncienPresident extends Model
 {
-    protected $table = 'membres_bureau';
-
     protected $fillable = [
         'nom',
         'prenom',
-        'poste',
-        'photo',
-        'ordre_affichage',
+        'periode_debut',
+        'periode_fin',
     ];
 
     public function scopeOrdered($query)
     {
-        return $query->orderBy('ordre_affichage', 'asc');
+        return $query->orderBy('periode_debut', 'desc');
     }
 }

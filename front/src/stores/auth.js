@@ -1,91 +1,37 @@
-// src/stores/auth.js
+import { defineStore } from 'pinia'
+import axios from '@/utils/axios'
 
-import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
-import apiClient from '@/api/axios';
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    token: localStorage.getItem('token') || null,
+    user: JSON.parse(localStorage.getItem('user') || 'null'),
+  }),
 
-export const useAuthStore = defineStore('auth', () => {
-    // =============================================
-    // STATE
-    // =============================================
-    const user = ref(null);
-    const token = ref(localStorage.getItem('token') || sessionStorage.getItem('token'));
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+  },
 
-    // =============================================
-    // GETTERS
-    // =============================================
-    const isAuthenticated = computed(() => !!token.value);
+  actions: {
+    async login(email, password) {
+      const response = await axios.post('/login', { email, password })
+      this.token = response.data.token
+      this.user = response.data.user
+      localStorage.setItem('token', this.token)
+      localStorage.setItem('user', JSON.stringify(this.user))
+      return response.data
+    },
 
-    const isPresident = computed(() => {
-        return user.value?.roles?.some(r => r.name === 'president') ?? false;
-    });
-
-    const isSecretaire = computed(() => {
-        return user.value?.roles?.some(r => r.name === 'secretaire_general') ?? false;
-    });
-
-    // =============================================
-    // ACTIONS
-    // =============================================
-    async function login(email, password, rememberMe = true) {
-        try {
-            const response = await apiClient.post('/login', {
-                email,
-                password,
-            });
-
-            user.value = response.data.user;
-            token.value = response.data.token;
-
-            if (rememberMe) {
-                localStorage.setItem('token', token.value);
-                sessionStorage.removeItem('token');
-            } else {
-                sessionStorage.setItem('token', token.value);
-                localStorage.removeItem('token');
-            }
-        } catch (error) {
-            throw error;
-        }
-    }
-
-    async function logout() {
-        try {
-            await apiClient.post('/admin/logout');
-        } catch (error) {
-            console.error('Erreur lors de la déconnexion:', error);
-        } finally {
-            user.value = null;
-            token.value = null;
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token');
-        }
-    }
-
-    async function fetchMe() {
-        try {
-            const response = await apiClient.get('/admin/me');
-            user.value = response.data;
-        } catch (error) {
-            user.value = null;
-            token.value = null;
-            localStorage.removeItem('token');
-            sessionStorage.removeItem('token');
-            throw error;
-        }
-    }
-
-    return {
-        // State
-        user,
-        token,
-        // Getters
-        isAuthenticated,
-        isPresident,
-        isSecretaire,
-        // Actions
-        login,
-        logout,
-        fetchMe,
-    };
-});
+    async logout() {
+      try {
+        await axios.post('/logout')
+      } catch (error) {
+        console.error(error)
+      } finally {
+        this.token = null
+        this.user = null
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+      }
+    },
+  },
+})
