@@ -32,7 +32,7 @@
 
     <div class="footer-bottom">
       <div class="container">
-        <p>© 2025 AEERO – Tous droits réservés</p>
+        <p>© 2026 AEERO – Tous droits réservés</p>
       </div>
     </div>
   </footer>
