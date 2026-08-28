@@ -22,4 +22,4 @@ RUN composer install --no-dev --optimize-autoloader
 EXPOSE 10000
 
 # Commande de démarrage
-CMD php artisan migrate --force && php artisan config:clear && php artisan serve --host=0.0.0.0 --port=10000
+CMD php artisan migrate --force || true && php artisan config:clear && php artisan serve --host=0.0.0.0 --port=10000
