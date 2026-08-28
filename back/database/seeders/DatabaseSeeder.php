@@ -2,23 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
-class AdminUserSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
-    public const ADMIN_EMAIL = 'admin@aeero.bj';
-    public const ADMIN_PASSWORD = 'password'; // à changer
-
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => self::ADMIN_EMAIL],
-            [
-                'name' => 'Responsable Informatique AEERO',
-                'password' => Hash::make(self::ADMIN_PASSWORD),
-            ]
-        );
+        $this->call([
+            AdminUserSeeder::class,
+        ]);
     }
 }

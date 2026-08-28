@@ -25,7 +25,9 @@ class MembreBureauController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('bureau', 'public');
+            $path = Storage::disk('cloudinary')->putFile('bureau', $request->file('photo'));
+            $data['photo'] = Storage::disk('cloudinary')->url($path);
+            $data['photo_path'] = $path;
         }
 
         return MembreBureau::create($data);
@@ -44,10 +46,12 @@ class MembreBureauController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            if ($membre->photo) {
-                Storage::disk('public')->delete($membre->photo);
+            if ($membre->photo_path) {
+                Storage::disk('cloudinary')->delete($membre->photo_path);
             }
-            $data['photo'] = $request->file('photo')->store('bureau', 'public');
+            $path = Storage::disk('cloudinary')->putFile('bureau', $request->file('photo'));
+            $data['photo'] = Storage::disk('cloudinary')->url($path);
+            $data['photo_path'] = $path;
         }
 
         $membre->update($data);
@@ -59,8 +63,8 @@ class MembreBureauController extends Controller
     {
         $membre = MembreBureau::findOrFail($id);
 
-        if ($membre->photo) {
-            Storage::disk('public')->delete($membre->photo);
+        if ($membre->photo_path) {
+            Storage::disk('cloudinary')->delete($membre->photo_path);
         }
 
         $membre->delete();

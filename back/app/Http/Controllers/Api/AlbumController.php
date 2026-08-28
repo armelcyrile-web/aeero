@@ -30,7 +30,9 @@ class AlbumController extends Controller
         ]);
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('albums/covers', 'public');
+            $path = Storage::disk('cloudinary')->putFile('albums/covers', $request->file('cover_image'));
+            $data['cover_image'] = Storage::disk('cloudinary')->url($path);
+            $data['cover_image_path'] = $path;
         }
 
         return Album::create($data);
@@ -48,10 +50,12 @@ class AlbumController extends Controller
         ]);
 
         if ($request->hasFile('cover_image')) {
-            if ($album->cover_image) {
-                Storage::disk('public')->delete($album->cover_image);
+            if ($album->cover_image_path) {
+                Storage::disk('cloudinary')->delete($album->cover_image_path);
             }
-            $data['cover_image'] = $request->file('cover_image')->store('albums/covers', 'public');
+            $path = Storage::disk('cloudinary')->putFile('albums/covers', $request->file('cover_image'));
+            $data['cover_image'] = Storage::disk('cloudinary')->url($path);
+            $data['cover_image_path'] = $path;
         }
 
         $album->update($data);
@@ -63,12 +67,13 @@ class AlbumController extends Controller
     {
         $album = Album::with('photos')->findOrFail($id);
 
-        if ($album->cover_image) {
-            Storage::disk('public')->delete($album->cover_image);
+        if ($album->cover_image_path) {
+            Storage::disk('cloudinary')->delete($album->cover_image_path);
         }
 
         foreach ($album->photos as $photo) {
-            Storage::disk('public')->delete($photo->chemin_image);
+            Storage::disk('cloudinary')->delete($photo->chemin_image);
+            $photo->delete();
         }
 
         $album->delete();
@@ -88,7 +93,7 @@ class AlbumController extends Controller
         $photos = [];
 
         foreach ($request->file('photos') as $file) {
-            $path = $file->store('albums', 'public');
+            $path = Storage::disk('cloudinary')->putFile('albums', $file);
             $photos[] = $album->photos()->create([
                 'chemin_image' => $path,
             ]);

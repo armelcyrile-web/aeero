@@ -30,7 +30,9 @@ class PublicationController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('publications', 'public');
+            $path = Storage::disk('cloudinary')->putFile('publications', $request->file('image'));
+            $data['image'] = Storage::disk('cloudinary')->url($path);
+            $data['image_path'] = $path;
         }
 
         return Publication::create($data);
@@ -49,10 +51,12 @@ class PublicationController extends Controller
         ]);
 
         if ($request->hasFile('image')) {
-            if ($publication->image) {
-                Storage::disk('public')->delete($publication->image);
+            if ($publication->image_path) {
+                Storage::disk('cloudinary')->delete($publication->image_path);
             }
-            $data['image'] = $request->file('image')->store('publications', 'public');
+            $path = Storage::disk('cloudinary')->putFile('publications', $request->file('image'));
+            $data['image'] = Storage::disk('cloudinary')->url($path);
+            $data['image_path'] = $path;
         }
 
         $publication->update($data);
@@ -64,8 +68,8 @@ class PublicationController extends Controller
     {
         $publication = Publication::findOrFail($id);
 
-        if ($publication->image) {
-            Storage::disk('public')->delete($publication->image);
+        if ($publication->image_path) {
+            Storage::disk('cloudinary')->delete($publication->image_path);
         }
 
         $publication->delete();
