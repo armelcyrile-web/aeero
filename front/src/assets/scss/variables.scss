@@ -1,17 +1,41 @@
 :root {
-  --primary: #8B6F7A;
-  --secondary: #9ACD32;
-  --accent: #E8734A;
-  --bg: #FAF9F7;
-  --text: #2A2426;
-  --surface: #ffffff;
+  /* Couleurs principales */
+  --primary: #243B53;           /* Bleu nuit */
+  --secondary: #6B4C5A;         /* Prune profond */
+  --accent: #9ACD32;            /* Vert lime */
+  --bg: #F8FAFC;                /* Blanc cassé */
+  --bg-secondary: #F1F5F9;      /* Gris clair */
+  --surface: #FFFFFF;           /* Blanc */
+  --text: #1E293B;              /* Anthracite */
+  --text-secondary: #64748B;    /* Gris bleuté */
+  --border: #E2E8F0;            /* Bordures discrètes */
+
+  /* Typographie */
+  --font-family: 'Inter', system-ui, sans-serif;
+  --font-weight-bold: 700;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+
+  /* Rayons de bordure */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
-body.dark {
-  --primary: #B597A3;
-  --secondary: #A8D451;
-  --accent: #F0885E;
-  --bg: #1A1618;
-  --surface: #252023;
-  --text: #EDE8E9;
+/* Mode sombre optionnel (non utilisé par défaut) */
+:root.dark {
+  --primary: #7C98B3;
+  --secondary: #B597A3;
+  --accent: #A8D451;
+  --bg: #1A1D23;
+  --bg-secondary: #242830;
+  --surface: #242830;
+  --text: #E4E7EB;
+  --text-secondary: #94A3B8;
+  --border: #334155;
 }

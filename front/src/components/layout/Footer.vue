@@ -1,9 +1,9 @@
 <template>
   <footer class="footer">
-    <div class="footer-container">
+    <div class="container footer-container">
       <div class="footer-col">
-        <h3 class="logo">AEERO</h3>
-        <p class="devise">Solidarité – Travail – Développement</p>
+        <h3 class="footer-logo">AEERO</h3>
+        <p class="footer-devise">Solidarité – Travail – Développement</p>
       </div>
 
       <div class="footer-col">
@@ -19,9 +19,9 @@
 
       <div class="footer-col">
         <h4>Contact</h4>
-        <p><MapPin class="icon" /> Ouoghi, Commune de Savè</p>
-        <p><Phone class="icon" /> {{ phone }}</p>
-        <p><Mail class="icon" /> {{ email }}</p>
+        <p><MapPin class="footer-icon" /> Ouoghi, Commune de Savè</p>
+        <p><Phone class="footer-icon" /> +229 00 00 00 00</p>
+        <p><Mail class="footer-icon" /> contact@aeero.bj</p>
       </div>
 
       <div class="footer-col">
@@ -31,22 +31,21 @@
     </div>
 
     <div class="footer-bottom">
-      <p>© 2026 AEERO – Tous droits réservés</p>
+      <div class="container">
+        <p>© 2025 AEERO – Tous droits réservés</p>
+      </div>
     </div>
   </footer>
 </template>
 
 <script setup>
 import { MapPin, Phone, Mail } from 'lucide-vue-next'
-
-const phone = '+229 00 00 00 00'
-const email = 'contact@aeero.bj'
 </script>
 
 <style scoped>
 .footer {
-  background-color: var(--surface);
-  color: var(--text);
+  background-color: var(--primary);
+  color: #fff;
   margin-top: auto;
 }
 
@@ -54,47 +53,43 @@ const email = 'contact@aeero.bj'
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 3rem 1.5rem 1.5rem;
+  padding: 4rem 1.5rem 2rem;
 }
 
 .footer-col {
   flex: 1;
   min-width: 200px;
-  display: flex;
-  flex-direction: column;
 }
 
-.logo {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
+.footer-logo {
   font-size: 1.8rem;
-  color: var(--primary);
+  font-weight: var(--font-weight-bold);
+  color: #fff;
   margin-bottom: 0.5rem;
 }
 
-.devise {
+.footer-devise {
   font-style: italic;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .footer-col h4 {
-  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: var(--font-weight-medium);
   margin-bottom: 1rem;
-  color: var(--primary);
+  color: #fff;
 }
 
 .footer-link {
   display: block;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   margin-bottom: 0.5rem;
-  transition: color 0.3s;
+  transition: color 0.2s;
 }
 
 .footer-link:hover {
-  color: var(--primary);
+  color: var(--accent);
 }
 
 .footer-col p {
@@ -102,18 +97,22 @@ const email = 'contact@aeero.bj'
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.icon {
+.footer-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent);
   flex-shrink: 0;
 }
 
 .footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 1.5rem 0;
   text-align: center;
-  padding: 1rem;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
   font-size: 0.9rem;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 @media (max-width: 768px) {

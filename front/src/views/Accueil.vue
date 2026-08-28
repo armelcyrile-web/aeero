@@ -1,18 +1,19 @@
 <template>
   <div class="accueil">
     <!-- HERO -->
-    <section class="hero">
-      <div class="hero-content">
-        <h1 class="hero-title">Association des Étudiants et Élèves Ressortissants de Ouoghi</h1>
-        <p class="hero-subtitle">
-          Ensemble, nous bâtissons l’avenir de notre communauté par l’éducation, la solidarité et la culture.
-        </p>
-        <div class="hero-actions">
-          <router-link to="/adhesion" class="btn btn-primary">Rejoindre l’association</router-link>
-          <router-link to="/presentation" class="btn btn-outline">Découvrir nos actions</router-link>
-        </div>
-      </div>
-    </section>
+   <section class="hero">
+  <div class="hero-background" aria-hidden="true">AEERO</div>
+  <div class="hero-content">
+    <h1 class="hero-title">Association des Étudiants et Élèves Ressortissants de Ouoghi</h1>
+    <p class="hero-subtitle">
+      Ensemble, nous bâtissons l’avenir de notre communauté par l’éducation, la solidarité et la culture.
+    </p>
+    <div class="hero-actions">
+      <router-link to="/adhesion" class="btn btn-primary">Rejoindre l’association</router-link>
+      <router-link to="/presentation" class="btn btn-outline-light">Découvrir nos actions</router-link>
+    </div>
+  </div>
+</section>
 
     <!-- CARROUSEL DYNAMIQUE -->
     <section class="carrousel-section">
@@ -352,52 +353,90 @@ onUnmounted(() => {
 
 /* HERO */
 .hero {
-  background: linear-gradient(rgba(42, 36, 38, 0.7), rgba(42, 36, 38, 0.7)), url('https://placehold.co/1600x800/1A1618/FFFFFF?text=AEERO') center/cover no-repeat;
+  position: relative;
+  background-color: var(--primary);
   color: #fff;
-  text-align: center;
   padding: 6rem 1.5rem;
+  overflow: hidden;
+  text-align: center;
+  transition: background-color 0.3s ease;
+
 }
+
+.hero-background {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12rem;
+  font-weight: 700;
+  color: #fff;
+  opacity: 0.06;
+  pointer-events: none;
+  letter-spacing: 0.2em;
+  user-select: none;
+}
+.hero-content {
+  position: relative;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .hero-title {
   font-size: 2.8rem;
   font-weight: 700;
   margin-bottom: 1rem;
+  color: #ffffff;
 }
+
 .hero-subtitle {
   font-size: 1.2rem;
-  max-width: 700px;
-  margin: 0 auto 2rem;
+  margin-bottom: 2rem;
+  color: #E2E8F0;
 }
+
 .hero-actions {
   display: flex;
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
 }
+
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.8rem 1.8rem;
-  border-radius: 50px;
+  border-radius: 6px;
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s;
-  cursor: pointer;
-  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
 }
+
 .btn-primary {
   background-color: var(--accent);
-  color: #fff;
+  color: var(--primary);
+  border-color: var(--accent);
 }
+
 .btn-primary:hover {
-  background-color: #d95f3c;
+  background-color: darken(#9ACD32, 5%);
+  border-color: darken(#9ACD32, 5%);
 }
-.btn-outline {
-  border: 2px solid #fff;
+
+.btn-outline-light {
+  background-color: transparent;
   color: #fff;
+  border-color: #fff;
 }
-.btn-outline:hover {
+
+.btn-outline-light:hover {
   background-color: #fff;
-  color: var(--text);
+  color: var(--primary);
 }
+
 
 /* CARROUSEL */
 .carrousel-section {

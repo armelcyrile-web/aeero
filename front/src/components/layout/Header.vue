@@ -14,13 +14,13 @@
       </nav>
 
       <div class="header-actions">
-        <button class="dark-toggle" @click="toggleDark" aria-label="Basculer le mode sombre">
-          <Sun v-if="isDark" />
-          <Moon v-else />
+        <button class="theme-toggle" @click="toggleTheme" :aria-label="isDark ? 'Activer le mode clair' : 'Activer le mode sombre'">
+          <Sun v-if="isDark" class="theme-icon" />
+          <Moon v-else class="theme-icon" />
         </button>
         <button class="hamburger" @click="mobileMenuOpen = !mobileMenuOpen" aria-label="Menu">
-          <X v-if="mobileMenuOpen" />
-          <Menu v-else />
+          <X v-if="mobileMenuOpen" class="menu-icon" />
+          <Menu v-else class="menu-icon" />
         </button>
       </div>
     </div>
@@ -46,7 +46,7 @@ import { Menu, X, Sun, Moon } from 'lucide-vue-next'
 const isDark = ref(false)
 const mobileMenuOpen = ref(false)
 
-const toggleDark = () => {
+const toggleTheme = () => {
   isDark.value = !isDark.value
   document.documentElement.classList.toggle('dark', isDark.value)
   localStorage.setItem('theme', isDark.value ? 'dark' : 'light')
@@ -67,7 +67,8 @@ onMounted(() => {
   top: 0;
   z-index: 1000;
   background-color: var(--surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .header-container {
@@ -81,7 +82,7 @@ onMounted(() => {
 }
 
 .logo {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
   font-weight: 700;
   font-size: 1.8rem;
   color: var(--primary);
@@ -94,15 +95,43 @@ onMounted(() => {
 }
 
 .desktop-nav a {
+  position: relative;
   color: var(--text);
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s;
+  transition: color 0.3s ease;
 }
 
-.desktop-nav a:hover,
+.desktop-nav a:hover {
+  color: var(--primary);
+}
+
 .desktop-nav a.active {
   color: var(--primary);
+}
+
+/* Soulignement animé */
+.desktop-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -8px;
+  width: 100%;
+  height: 3px;
+  background-color: var(--accent);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.desktop-nav a:hover::after {
+  transform: scaleX(1);
+}
+
+.desktop-nav a.active::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 .header-actions {
@@ -111,21 +140,30 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.dark-toggle,
+.theme-toggle,
 .hamburger {
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text);
+  padding: 0.5rem;
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  padding: 0.5rem;
-  transition: color 0.3s;
+  justify-content: center;
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.dark-toggle:hover,
+.theme-toggle:hover,
 .hamburger:hover {
+  background-color: var(--bg-secondary);
   color: var(--primary);
+}
+
+.theme-icon,
+.menu-icon {
+  width: 20px;
+  height: 20px;
 }
 
 .hamburger {
@@ -140,26 +178,23 @@ onMounted(() => {
   .desktop-nav {
     display: none;
   }
-
   .hamburger {
     display: flex;
   }
-
   .mobile-nav {
     display: flex;
     flex-direction: column;
     background-color: var(--surface);
+    border-top: 1px solid var(--border);
     padding: 1rem 1.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
-
   .mobile-nav a {
     padding: 0.75rem 0;
     color: var(--text);
     text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    font-weight: 500;
+    border-bottom: 1px solid var(--border);
   }
-
   .mobile-nav a:last-child {
     border-bottom: none;
   }
@@ -169,7 +204,6 @@ onMounted(() => {
 .slide-leave-active {
   transition: all 0.3s ease;
 }
-
 .slide-enter-from,
 .slide-leave-to {
   opacity: 0;

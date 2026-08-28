@@ -9,19 +9,198 @@
 }
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
   background-color: var(--bg);
   color: var(--text);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.heading {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold);
+  color: var(--text);
+  margin-bottom: 0.5em;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--secondary);
+  }
+}
+
+/* Boutons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: var(--radius-sm);
+  font-weight: var(--font-weight-medium);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  text-align: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--primary);
+  border-color: var(--accent);
+
+  &:hover {
+    background-color: darken(#9ACD32, 5%);
+    border-color: darken(#9ACD32, 5%);
+  }
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary);
+  border-color: var(--primary);
+
+  &:hover {
+    background-color: var(--primary);
+    color: #fff;
+  }
+}
+
+.btn-outline-light {
+  background-color: transparent;
+  color: #fff;
+  border-color: #fff;
+
+  &:hover {
+    background-color: #fff;
+    color: var(--primary);
+  }
+}
+
+/* Cartes */
+.card {
+  background-color: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+}
+
+/* Sections */
+.section {
+  padding: 4rem 1.5rem;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+  }
+
+  .section-icon {
+    color: var(--accent);
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* Liens avec flèche */
+.link-with-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--primary);
+
+  svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover svg {
+    transform: translateX(4px);
+  }
+}
+
+/* Conteneur */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Utilitaires */
+.text-muted {
+  color: var(--text-secondary);
+}
+
+.bg-secondary {
+  background-color: var(--bg-secondary);
+}
+
+/* Soulignement animé des titres de sections */
+section > h1,
+section > h2,
+.section-header h2 {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 2rem;
+  
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -14px;
+    width: 120px;
+    height: 4px;
+    background-color: #9ACD32;
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: underline-grow 0.35s ease forwards;
+  }
+}
+
+@keyframes underline-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Pour que le soulignement ne soit pas animé à chaque re-render (optionnel) */
+@media (prefers-reduced-motion: reduce) {
+  section > h1::after,
+  section > h2::after,
+  .section-header h2::after {
+    animation: none;
+    transform: scaleX(1);
+  }
 }
