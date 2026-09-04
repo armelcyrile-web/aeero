@@ -14,24 +14,36 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       const response = await axios.post('/login', { email, password })
-      this.token = response.data.token
+      
+      // Adaptation selon la structure de la réponse (ex: response.data.token ou response.data.access_token)
+      this.token = response.data.token || response.data.access_token
       this.user = response.data.user
+      
       localStorage.setItem('token', this.token)
       localStorage.setItem('user', JSON.stringify(this.user))
+      
       return response.data
     },
 
     async logout() {
-      try {
-        await axios.post('/logout')
-      } catch (error) {
-        console.error(error)
-      } finally {
-        this.token = null
-        this.user = null
-        localStorage.removeItem('token')
-        localStorage.removeItem('user')
+      if (this.token) {
+        try {
+          await axios.post('/logout')
+        } catch (error) {
+          // Si le token est expiré ou invalide (401), on ignore l'erreur serveur
+          console.warn('Déconnexion échouée sur le serveur ou session déjà expirée')
+        }
       }
+      
+      // Réinitialisation locale garantie
+      this.clearAuthData()
     },
+
+    clearAuthData() {
+      this.token = null
+      this.user = null
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+    }
   },
 })
