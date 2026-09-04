@@ -1,14 +1,15 @@
 <?php
 
 return [
-    'paths' => ['api/*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter([
+    // Inscrire directement le domaine Netlify
+    'allowed_origins' => [
+        'https://aeero.netlify.app',
         'http://localhost:5173',
-        env('FRONTEND_URL'),
-    ]),
+    ],
 
     'allowed_origins_patterns' => [],
 
