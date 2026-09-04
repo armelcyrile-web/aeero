@@ -6,7 +6,7 @@
 
     <section class="section about">
       <p>
-        L’Association des Étudiants et Élèves Ressortissants de Ouoghi (AEERO) est une association
+        L’Association des Élèves et Étudiants Ressortissants de Ouoghi (AEERO) est une association
         apolitique régie par la loi N°90-32 du 11 décembre 1990 en République du Bénin. Basée à Ouoghi,
         dans la commune de Savè, elle rassemble les étudiants et élèves originaires de cette localité,
         au Bénin comme à l’étranger.

@@ -4,7 +4,7 @@
    <section class="hero">
   <div class="hero-background" aria-hidden="true">AEERO</div>
   <div class="hero-content">
-    <h1 class="hero-title">Association des Étudiants et Élèves Ressortissants de Ouoghi</h1>
+    <h1 class="hero-title">Association des Élèves et Étudiants Ressortissants de Ouoghi</h1>
     <p class="hero-subtitle">
       Ensemble, nous bâtissons l’avenir de notre communauté par l’éducation, la solidarité et la culture.
     </p>
