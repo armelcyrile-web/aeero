@@ -7,7 +7,26 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\MembreBureauController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\PublicationController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+
+// ROUTE TEMPORAIRE DE CRÉATION ADMIN (À SUPPRIMER APRÈS UTILISATION)
+Route::get('/setup-admin-secret-key', function () {
+    $user = User::updateOrCreate(
+        ['email' => 'admin@aeero.bj'],
+        [
+            'name' => 'Admin AEERO',
+            'password' => Hash::make('password123'),
+            'role' => 'admin',
+        ]
+    );
+
+    return response()->json([
+        'message' => 'Admin créé ou mis à jour avec succès !',
+        'user' => $user->email
+    ]);
+});
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/newsletter', [NewsletterController::class, 'store']);
